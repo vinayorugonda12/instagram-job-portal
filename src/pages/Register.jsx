@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 function Register() {
@@ -16,11 +17,11 @@ function Register() {
     setMessage("");
 
     const { error } = await supabase.auth.signUp({
-      email,
+      email: email.trim(),
       password,
       options: {
         data: {
-          full_name: fullName,
+          full_name: fullName.trim(),
         },
       },
     });
@@ -37,50 +38,79 @@ function Register() {
   }
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto" }}>
-      <h1>Create Account</h1>
+    <div className="auth-page">
+      <div className="auth-container">
 
-      <form onSubmit={handleRegister}>
-        <input
-          type="text"
-          placeholder="Full name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          required
-        />
+        <h1>Create Account</h1>
 
-        <br />
-        <br />
+        <p>
+          Create your account to discover the latest job opportunities.
+        </p>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <form onSubmit={handleRegister} className="auth-form">
 
-        <br />
-        <br />
+          <label>
+            Full Name
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          minLength={6}
-        />
+            <input
+              type="text"
+              placeholder="Enter your full name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+          </label>
 
-        <br />
-        <br />
+          <label>
+            Email
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Creating account..." : "Register"}
-        </button>
-      </form>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </label>
 
-      {message && <p>{message}</p>}
+          <label>
+            Password
+
+            <input
+              type="password"
+              placeholder="Create a password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+            />
+          </label>
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Creating Account..." : "Register"}
+          </button>
+        </form>
+
+        {message && (
+          <p className="auth-link">
+            {message}
+          </p>
+        )}
+
+        <div className="auth-link">
+          Already have an account?{" "}
+          <Link to="/login">
+            Login
+          </Link>
+        </div>
+
+        <div className="auth-link">
+          <Link to="/jobs">
+            ← Browse Jobs
+          </Link>
+        </div>
+
+      </div>
     </div>
   );
 }
