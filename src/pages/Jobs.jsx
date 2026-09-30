@@ -16,6 +16,9 @@ function Jobs() {
   const [jobTypeFilter, setJobTypeFilter] = useState("");
   const [sortBy, setSortBy] = useState("newest");
 
+  // Coming Soon popup
+  const [showComingSoon, setShowComingSoon] = useState(false);
+
   useEffect(() => {
     fetchJobs();
   }, []);
@@ -54,7 +57,10 @@ function Jobs() {
       ...new Set(
         jobs
           .map((job) => job.location)
-          .filter((location) => location && location.trim() !== "")
+          .filter(
+            (location) =>
+              location && location.trim() !== ""
+          )
       ),
     ].sort();
   }, [jobs]);
@@ -65,7 +71,10 @@ function Jobs() {
       ...new Set(
         jobs
           .map((job) => job.job_type)
-          .filter((jobType) => jobType && jobType.trim() !== "")
+          .filter(
+            (jobType) =>
+              jobType && jobType.trim() !== ""
+          )
       ),
     ].sort();
   }, [jobs]);
@@ -83,30 +92,46 @@ function Jobs() {
         job.requirements?.toLowerCase().includes(searchText);
 
       const matchesLocation =
-        !locationFilter || job.location === locationFilter;
+        !locationFilter ||
+        job.location === locationFilter;
 
       const matchesJobType =
-        !jobTypeFilter || job.job_type === jobTypeFilter;
+        !jobTypeFilter ||
+        job.job_type === jobTypeFilter;
 
-      return matchesSearch && matchesLocation && matchesJobType;
+      return (
+        matchesSearch &&
+        matchesLocation &&
+        matchesJobType
+      );
     });
 
     // Sorting
     result.sort((a, b) => {
       if (sortBy === "newest") {
-        return new Date(b.created_at) - new Date(a.created_at);
+        return (
+          new Date(b.created_at) -
+          new Date(a.created_at)
+        );
       }
 
       if (sortBy === "oldest") {
-        return new Date(a.created_at) - new Date(b.created_at);
+        return (
+          new Date(a.created_at) -
+          new Date(b.created_at)
+        );
       }
 
       if (sortBy === "title-asc") {
-        return (a.title || "").localeCompare(b.title || "");
+        return (a.title || "").localeCompare(
+          b.title || ""
+        );
       }
 
       if (sortBy === "title-desc") {
-        return (b.title || "").localeCompare(a.title || "");
+        return (b.title || "").localeCompare(
+          a.title || ""
+        );
       }
 
       return 0;
@@ -138,18 +163,35 @@ function Jobs() {
     <div className="jobs-page">
       <div className="jobs-container">
 
-        {/* Navigation */}
+        {/* =========================
+            NAVIGATION
+        ========================= */}
+
         <div className="jobs-nav">
 
           <div className="nav-brand">
-            <Link to="/jobs">Job Portal</Link>
+            <Link to="/jobs">
+              <span className="brand-title">
+                Job Portal
+              </span>
+
+              <span className="brand-separator">
+                •
+              </span>
+
+              <span className="brand-company">
+                JavaDebugged
+              </span>
+            </Link>
           </div>
 
           <div className="nav-actions">
+
             {user ? (
               <>
                 <span className="welcome-text">
-                  Welcome, {profile?.full_name || user.email}
+                  Welcome,{" "}
+                  {profile?.full_name || user.email}
                 </span>
 
                 <Link
@@ -177,140 +219,193 @@ function Jobs() {
               </>
             ) : (
               <>
-                <Link
-                  to="/login"
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowComingSoon(true)
+                  }
                   className="login-button"
                 >
                   Login
-                </Link>
+                </button>
 
-                <Link
-                  to="/register"
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowComingSoon(true)
+                  }
                   className="register-button"
                 >
                   Register
-                </Link>
+                </button>
               </>
             )}
+
           </div>
 
         </div>
 
-        {/* Header */}
+        {/* =========================
+            HEADER
+        ========================= */}
+
         <div className="jobs-header">
           <h1>Latest Jobs</h1>
+
           <p>
-            Find the latest job opportunities and start your career.
+            Find the latest job opportunities and
+            start your career.
           </p>
         </div>
 
-        {/* Search and Filters */}
-        {!loading && !error && jobs.length > 0 && (
-          <div className="jobs-filters">
+        {/* =========================
+            SEARCH AND FILTERS
+        ========================= */}
 
-            {/* Search */}
-            <div className="search-box">
-              <span className="search-icon">🔍</span>
+        {!loading &&
+          !error &&
+          jobs.length > 0 && (
+            <div className="jobs-filters">
 
-              <input
-                type="text"
-                placeholder="Search jobs, companies, skills..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
+              {/* Search */}
+              <div className="search-box">
 
-            {/* Location */}
-            <select
-              value={locationFilter}
-              onChange={(e) => setLocationFilter(e.target.value)}
-            >
-              <option value="">All Locations</option>
+                <span className="search-icon">
+                  🔍
+                </span>
 
-              {locations.map((location) => (
-                <option
-                  key={location}
-                  value={location}
-                >
-                  {location}
-                </option>
-              ))}
-            </select>
+                <input
+                  type="text"
+                  placeholder="Search jobs, companies, skills..."
+                  value={search}
+                  onChange={(e) =>
+                    setSearch(e.target.value)
+                  }
+                />
 
-            {/* Job Type */}
-            <select
-              value={jobTypeFilter}
-              onChange={(e) => setJobTypeFilter(e.target.value)}
-            >
-              <option value="">All Job Types</option>
+              </div>
 
-              {jobTypes.map((jobType) => (
-                <option
-                  key={jobType}
-                  value={jobType}
-                >
-                  {jobType}
-                </option>
-              ))}
-            </select>
-
-            {/* Sort */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="newest">
-                Newest First
-              </option>
-
-              <option value="oldest">
-                Oldest First
-              </option>
-
-              <option value="title-asc">
-                Title A–Z
-              </option>
-
-              <option value="title-desc">
-                Title Z–A
-              </option>
-            </select>
-
-            {/* Clear Filters */}
-            {hasFilters && (
-              <button
-                className="clear-filters-button"
-                onClick={clearFilters}
+              {/* Location */}
+              <select
+                value={locationFilter}
+                onChange={(e) =>
+                  setLocationFilter(e.target.value)
+                }
               >
-                Clear Filters
-              </button>
-            )}
+                <option value="">
+                  All Locations
+                </option>
 
-          </div>
-        )}
+                {locations.map((location) => (
+                  <option
+                    key={location}
+                    value={location}
+                  >
+                    {location}
+                  </option>
+                ))}
+              </select>
 
-        {/* Result Count */}
-        {!loading && !error && jobs.length > 0 && (
-          <div className="jobs-result-info">
+              {/* Job Type */}
+              <select
+                value={jobTypeFilter}
+                onChange={(e) =>
+                  setJobTypeFilter(e.target.value)
+                }
+              >
+                <option value="">
+                  All Job Types
+                </option>
+
+                {jobTypes.map((jobType) => (
+                  <option
+                    key={jobType}
+                    value={jobType}
+                  >
+                    {jobType}
+                  </option>
+                ))}
+              </select>
+
+              {/* Sort */}
+              <select
+                value={sortBy}
+                onChange={(e) =>
+                  setSortBy(e.target.value)
+                }
+              >
+                <option value="newest">
+                  Newest First
+                </option>
+
+                <option value="oldest">
+                  Oldest First
+                </option>
+
+                <option value="title-asc">
+                  Title A–Z
+                </option>
+
+                <option value="title-desc">
+                  Title Z–A
+                </option>
+              </select>
+
+              {/* Clear Filters */}
+              {hasFilters && (
+                <button
+                  className="clear-filters-button"
+                  onClick={clearFilters}
+                >
+                  Clear Filters
+                </button>
+              )}
+
+            </div>
+          )}
+
+        {/* =========================
+            RESULT COUNT
+        ========================= */}
+
+        {!loading &&
+          !error &&
+          jobs.length > 0 && (
+            <div className="jobs-result-info">
+              <p>
+                Showing{" "}
+                <strong>
+                  {filteredJobs.length}
+                </strong>{" "}
+                {filteredJobs.length === 1
+                  ? "job"
+                  : "jobs"}
+              </p>
+            </div>
+          )}
+
+        {/* =========================
+            LOADING
+        ========================= */}
+
+        {loading && (
+          <div className="no-jobs">
+            <h2>Loading jobs...</h2>
+
             <p>
-              Showing{" "}
-              <strong>{filteredJobs.length}</strong>{" "}
-              {filteredJobs.length === 1 ? "job" : "jobs"}
+              Please wait while we load the
+              latest opportunities.
             </p>
           </div>
         )}
 
-        {/* Loading */}
-        {loading && (
-          <div className="no-jobs">
-            <h2>Loading jobs...</h2>
-            <p>Please wait while we load the latest opportunities.</p>
-          </div>
-        )}
+        {/* =========================
+            ERROR
+        ========================= */}
 
-        {/* Error */}
         {!loading && error && (
           <div className="error-message">
+
             <h2>Something went wrong</h2>
 
             <p>{error}</p>
@@ -323,29 +418,39 @@ function Jobs() {
             >
               Try Again
             </button>
+
           </div>
         )}
 
-        {/* No jobs at all */}
+        {/* =========================
+            NO JOBS
+        ========================= */}
+
         {!loading &&
           !error &&
           jobs.length === 0 && (
             <div className="no-jobs">
+
               <h2>No jobs available</h2>
 
               <p>
                 There are currently no active jobs.
                 Please check again later.
               </p>
+
             </div>
           )}
 
-        {/* No matching jobs */}
+        {/* =========================
+            NO MATCHING JOBS
+        ========================= */}
+
         {!loading &&
           !error &&
           jobs.length > 0 &&
           filteredJobs.length === 0 && (
             <div className="no-jobs">
+
               <h2>No matching jobs</h2>
 
               <p>
@@ -360,10 +465,14 @@ function Jobs() {
               >
                 Clear Filters
               </button>
+
             </div>
           )}
 
-        {/* Jobs List */}
+        {/* =========================
+            JOBS LIST
+        ========================= */}
+
         {!loading &&
           !error &&
           filteredJobs.length > 0 && (
@@ -390,6 +499,7 @@ function Jobs() {
 
                   {/* Location */}
                   <div className="job-meta">
+
                     {job.location && (
                       <p>
                         📍 {job.location}
@@ -401,10 +511,12 @@ function Jobs() {
                         💰 {job.salary}
                       </p>
                     )}
+
                   </div>
 
                   {/* Description */}
                   <p className="job-description">
+
                     {job.description
                       ? job.description.length > 180
                         ? `${job.description.substring(
@@ -413,16 +525,20 @@ function Jobs() {
                           )}...`
                         : job.description
                       : "No description available."}
+
                   </p>
 
                   {/* Date */}
                   <p className="job-date">
+
                     Posted on{" "}
+
                     {job.created_at
                       ? new Date(
                           job.created_at
                         ).toLocaleDateString()
                       : "N/A"}
+
                   </p>
 
                   {/* View Job */}
@@ -440,6 +556,53 @@ function Jobs() {
           )}
 
       </div>
+
+      {/* =========================
+          COMING SOON MODAL
+      ========================= */}
+
+      {showComingSoon && (
+        <div className="coming-soon-overlay">
+
+          <div className="coming-soon-modal">
+
+            <button
+              type="button"
+              className="coming-soon-close"
+              onClick={() =>
+                setShowComingSoon(false)
+              }
+            >
+              ×
+            </button>
+
+            <div className="coming-soon-icon">
+              🚀
+            </div>
+
+            <h2>Coming Soon</h2>
+
+            <p>
+              Login and registration will be
+              available soon. For now, you can
+              browse jobs and apply directly.
+            </p>
+
+            <button
+              type="button"
+              className="coming-soon-button"
+              onClick={() =>
+                setShowComingSoon(false)
+              }
+            >
+              Continue Browsing Jobs
+            </button>
+
+          </div>
+
+        </div>
+      )}
+
     </div>
   );
 }

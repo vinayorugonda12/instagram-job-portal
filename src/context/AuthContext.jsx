@@ -1,100 +1,34 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [session, setSession] = useState(null);
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
+  const [adminAuthenticated, setAdminAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  async function loadProfile(userId) {
-    try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
-
-      if (error) {
-        console.error("Profile loading error:", error);
-        setProfile(null);
-        return;
-      }
-
-      setProfile(data);
-    } catch (error) {
-      console.error("Profile exception:", error);
-      setProfile(null);
-    }
-  }
-
   useEffect(() => {
-    let mounted = true;
+    const authenticated =
+      sessionStorage.getItem("admin_authenticated") === "true";
 
-    async function initializeAuth() {
-      const { data, error } = await supabase.auth.getSession();
-
-      if (error) {
-        console.error("Session error:", error);
-      }
-
-      if (!mounted) return;
-
-      const currentSession = data?.session ?? null;
-
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-
-      if (currentSession?.user) {
-        await loadProfile(currentSession.user.id);
-      }
-
-      if (mounted) {
-        setLoading(false);
-      }
-    }
-
-    initializeAuth();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
-      if (!mounted) return;
-
-      setSession(newSession);
-      setUser(newSession?.user ?? null);
-
-      if (newSession?.user) {
-        await loadProfile(newSession.user.id);
-      } else {
-        setProfile(null);
-      }
-
-      setLoading(false);
-    });
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
+    setAdminAuthenticated(authenticated);
+    setLoading(false);
   }, []);
 
-  async function logout() {
-    const { error } = await supabase.auth.signOut();
+  function adminLogin() {
+    sessionStorage.setItem("admin_authenticated", "true");
+    setAdminAuthenticated(true);
+  }
 
-    if (error) {
-      console.error("Logout error:", error);
-    }
+  function adminLogout() {
+    sessionStorage.removeItem("admin_authenticated");
+    setAdminAuthenticated(false);
   }
 
   const value = {
-    session,
-    user,
-    profile,
+    adminAuthenticated,
     loading,
-    logout,
+    adminLogin,
+    adminLogout,
   };
 
   return (

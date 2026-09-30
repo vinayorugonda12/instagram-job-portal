@@ -4,26 +4,25 @@ import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../context/AuthContext";
 
 function Dashboard() {
-  const { user, profile, logout } = useAuth();
+  const { adminAuthenticated, adminLogout } = useAuth();
 
   const [stats, setStats] = useState({
     totalJobs: 0,
     activeJobs: 0,
-    totalApplications: 0,
-    totalUsers: 0,
+    totalViews: 0,
+    totalApplyClicks: 0,
   });
 
   const [recentJobs, setRecentJobs] = useState([]);
-  const [recentApplications, setRecentApplications] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (user && profile?.role === "admin") {
+    if (adminAuthenticated) {
       loadDashboard();
     }
-  }, [user, profile]);
+  }, [adminAuthenticated]);
 
   async function loadDashboard() {
     setLoading(true);
@@ -34,13 +33,15 @@ function Dashboard() {
       // TOTAL JOBS
       // =========================
 
-      const { count: totalJobs, error: jobsError } =
-        await supabase
-          .from("jobs")
-          .select("*", {
-            count: "exact",
-            head: true,
-          });
+      const {
+        count: totalJobs,
+        error: jobsError,
+      } = await supabase
+        .from("jobs")
+        .select("*", {
+          count: "exact",
+          head: true,
+        });
 
       if (jobsError) {
         throw jobsError;
@@ -50,103 +51,78 @@ function Dashboard() {
       // ACTIVE JOBS
       // =========================
 
-      const { count: activeJobs, error: activeJobsError } =
-        await supabase
-          .from("jobs")
-          .select("*", {
-            count: "exact",
-            head: true,
-          })
-          .eq("status", "active");
+      const {
+        count: activeJobs,
+        error: activeJobsError,
+      } = await supabase
+        .from("jobs")
+        .select("*", {
+          count: "exact",
+          head: true,
+        })
+        .eq("status", "active");
 
       if (activeJobsError) {
         throw activeJobsError;
       }
 
       // =========================
-      // TOTAL APPLICATIONS
+      // PAGE VIEWS
       // =========================
 
       const {
-        count: totalApplications,
-        error: applicationsError,
+        count: totalViews,
+        error: viewsError,
       } = await supabase
-        .from("applications")
+        .from("analytics_events")
         .select("*", {
           count: "exact",
           head: true,
-        });
+        })
+        .eq("event_type", "PAGE_VIEW");
 
-      if (applicationsError) {
-        throw applicationsError;
+      if (viewsError) {
+        throw viewsError;
       }
 
       // =========================
-      // TOTAL USERS
+      // APPLY CLICKS
       // =========================
 
-      const { count: totalUsers, error: usersError } =
-        await supabase
-          .from("profiles")
-          .select("*", {
-            count: "exact",
-            head: true,
-          })
-          .eq("role", "user");
+      const {
+        count: totalApplyClicks,
+        error: applyError,
+      } = await supabase
+        .from("analytics_events")
+        .select("*", {
+          count: "exact",
+          head: true,
+        })
+        .eq("event_type", "APPLY_CLICK");
 
-      if (usersError) {
-        throw usersError;
+      if (applyError) {
+        throw applyError;
       }
 
       // =========================
       // RECENT JOBS
       // =========================
 
-      const { data: jobs, error: recentJobsError } =
-        await supabase
-          .from("jobs")
-          .select(
-            "id, title, company, location, job_type, status, created_at"
-          )
-          .order("created_at", {
-            ascending: false,
-          })
-          .limit(5);
-
-      if (recentJobsError) {
-        throw recentJobsError;
-      }
-
-      // =========================
-      // RECENT APPLICATIONS
-      // =========================
-
       const {
-        data: applications,
-        error: recentApplicationsError,
+        data: jobs,
+        error: recentJobsError,
       } = await supabase
-        .from("applications")
-        .select(`
-          id,
-          applied_at,
-          job_id,
-          jobs (
-            id,
-            title,
-            company
-          ),
-          profiles:user_id (
-            full_name,
-            email
-          )
-        `)
-        .order("applied_at", {
+        .from("jobs")
+        .select(
+          "id, title, company, location, job_type, status, created_at"
+        )
+        .order("created_at", {
           ascending: false,
         })
         .limit(5);
 
-      if (recentApplicationsError) {
-        throw recentApplicationsError;
+      if (recentJobsError) {
+        throw recentJobsError;
       }
 
       // =========================
@@ -156,29 +132,25 @@ function Dashboard() {
       setStats({
         totalJobs: totalJobs || 0,
         activeJobs: activeJobs || 0,
-        totalApplications: totalApplications || 0,
-        totalUsers: totalUsers || 0,
+        totalViews: totalViews || 0,
+        totalApplyClicks: totalApplyClicks || 0,
       });
 
       setRecentJobs(jobs || []);
-      setRecentApplications(applications || []);
     } catch (error) {
-      console.error(
-        "Dashboard loading error:",
-        error
-      );
+      console.error("Dashboard loading error:", error);
 
       setError(
         error.message ||
           "Unable to load dashboard data."
       );
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
-  async function handleLogout() {
-    await logout();
+  function handleLogout() {
+    adminLogout();
   }
 
   // =========================
@@ -189,16 +161,18 @@ function Dashboard() {
     return (
       <div className="admin-page">
         <div className="admin-container">
-
           <div className="admin-loading">
             <h2>Loading Dashboard...</h2>
             <p>Please wait.</p>
           </div>
-
         </div>
       </div>
     );
   }
+
+  // =========================
+  // DASHBOARD
+  // =========================
 
   return (
     <div className="admin-page">
@@ -209,20 +183,15 @@ function Dashboard() {
         ========================= */}
 
         <div className="admin-header">
-
           <div>
-            <h1>
-              Admin Dashboard
-            </h1>
+            <h1>Admin Dashboard</h1>
 
             <p>
-              Welcome,{" "}
-              {profile?.full_name || user?.email}
+              Manage your JavaDebugged Job Portal.
             </p>
           </div>
 
           <div className="admin-header-actions">
-
             <Link
               to="/jobs"
               className="admin-secondary-button"
@@ -236,9 +205,7 @@ function Dashboard() {
             >
               Logout
             </button>
-
           </div>
-
         </div>
 
         {/* =========================
@@ -247,19 +214,13 @@ function Dashboard() {
 
         {error && (
           <div className="error-message">
+            <h3>Dashboard Error</h3>
 
-            <h3>
-              Dashboard Error
-            </h3>
-
-            <p>
-              {error}
-            </p>
+            <p>{error}</p>
 
             <button onClick={loadDashboard}>
               Try Again
             </button>
-
           </div>
         )}
 
@@ -295,26 +256,26 @@ function Dashboard() {
             </div>
 
             <div className="dashboard-stat-card">
-              <span>Applications</span>
+              <span>Page Views</span>
 
               <strong>
-                {stats.totalApplications}
+                {stats.totalViews}
               </strong>
 
               <small>
-                Total applications
+                Total portal views
               </small>
             </div>
 
             <div className="dashboard-stat-card">
-              <span>Users</span>
+              <span>Apply Clicks</span>
 
               <strong>
-                {stats.totalUsers}
+                {stats.totalApplyClicks}
               </strong>
 
               <small>
-                Registered users
+                External applications
               </small>
             </div>
 
@@ -328,17 +289,13 @@ function Dashboard() {
         <div className="dashboard-section">
 
           <div className="dashboard-section-header">
-
             <div>
-              <h2>
-                Quick Actions
-              </h2>
+              <h2>Quick Actions</h2>
 
               <p>
                 Manage your job portal.
               </p>
             </div>
-
           </div>
 
           <div className="dashboard-actions">
@@ -352,9 +309,7 @@ function Dashboard() {
               </span>
 
               <div>
-                <h3>
-                  Add New Job
-                </h3>
+                <h3>Add New Job</h3>
 
                 <p>
                   Post a new job opportunity.
@@ -371,31 +326,10 @@ function Dashboard() {
               </span>
 
               <div>
-                <h3>
-                  Manage Jobs
-                </h3>
+                <h3>Manage Jobs</h3>
 
                 <p>
                   Edit, close or delete jobs.
-                </p>
-              </div>
-            </Link>
-
-            <Link
-              to="/admin/applications"
-              className="dashboard-action-card"
-            >
-              <span className="dashboard-action-icon">
-                A
-              </span>
-
-              <div>
-                <h3>
-                  Applications
-                </h3>
-
-                <p>
-                  View submitted applications.
                 </p>
               </div>
             </Link>
@@ -409,9 +343,7 @@ function Dashboard() {
               </span>
 
               <div>
-                <h3>
-                  Analytics
-                </h3>
+                <h3>Analytics</h3>
 
                 <p>
                   View portal performance.
@@ -432,9 +364,7 @@ function Dashboard() {
           <div className="dashboard-section-header">
 
             <div>
-              <h2>
-                Recent Jobs
-              </h2>
+              <h2>Recent Jobs</h2>
 
               <p>
                 Latest jobs added to the portal.
@@ -452,6 +382,7 @@ function Dashboard() {
 
           {recentJobs.length === 0 ? (
             <div className="dashboard-empty">
+
               <p>
                 No jobs have been posted yet.
               </p>
@@ -462,6 +393,7 @@ function Dashboard() {
               >
                 Add First Job
               </Link>
+
             </div>
           ) : (
             <div className="recent-items">
@@ -513,103 +445,6 @@ function Dashboard() {
 
                 </div>
               ))}
-
-            </div>
-          )}
-
-        </div>
-
-        {/* =========================
-            RECENT APPLICATIONS
-        ========================= */}
-
-        <div className="dashboard-section">
-
-          <div className="dashboard-section-header">
-
-            <div>
-              <h2>
-                Recent Applications
-              </h2>
-
-              <p>
-                Latest applications received.
-              </p>
-            </div>
-
-            <Link
-              to="/admin/applications"
-              className="dashboard-view-all"
-            >
-              View All
-            </Link>
-
-          </div>
-
-          {recentApplications.length === 0 ? (
-            <div className="dashboard-empty">
-
-              <p>
-                No applications have been received yet.
-              </p>
-
-            </div>
-          ) : (
-            <div className="recent-items">
-
-              {recentApplications.map(
-                (application) => {
-
-                  const applicant =
-                    application.profiles;
-
-                  const job =
-                    application.jobs;
-
-                  return (
-                    <div
-                      className="recent-application-item"
-                      key={application.id}
-                    >
-
-                      <div>
-
-                        <h3>
-                          {applicant?.full_name ||
-                            "User"}
-                        </h3>
-
-                        <p>
-                          {applicant?.email ||
-                            "Email unavailable"}
-                        </p>
-
-                      </div>
-
-                      <div>
-
-                        <strong>
-                          {job?.title ||
-                            "Job unavailable"}
-                        </strong>
-
-                        <p>
-                          {job?.company ||
-                            ""}
-                        </p>
-
-                      </div>
-
-                      <small>
-                        {new Date(
-                          application.applied_at
-                        ).toLocaleDateString()}
-                      </small>
-
-                    </div>
-                  );
-                }
-              )}
 
             </div>
           )}

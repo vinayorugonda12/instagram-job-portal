@@ -2492,3 +2492,1285 @@ a {
 
   line-height: 1.5;
 }
+
+/* ================================
+   Coming Soon Modal
+================================ */
+
+.coming-soon-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.coming-soon-modal {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 40px 30px 30px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: comingSoonPop 0.2s ease-out;
+}
+
+.coming-soon-close {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+}
+
+.coming-soon-close:hover {
+  color: #111;
+}
+
+.coming-soon-icon {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.coming-soon-modal h2 {
+  margin: 0 0 12px;
+  font-size: 28px;
+}
+
+.coming-soon-modal p {
+  margin: 0 auto 25px;
+  line-height: 1.6;
+  color: #666;
+}
+
+.coming-soon-button {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 22px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.coming-soon-button:hover {
+  background: #1d4ed8;
+}
+
+@keyframes comingSoonPop {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.nav-button {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+.nav-button:hover {
+  opacity: 0.8;
+}
+
+/* JavaDebugged Job Portal Branding */
+
+.nav-brand > a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.brand-title {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.brand-separator {
+  font-size: 18px;
+  opacity: 0.5;
+}
+
+.brand-company {
+  font-size: 18px;
+  font-weight: 600;
+}
+/* =========================================================
+   JAVDEBUGGED BRANDING
+========================================================= */
+
+.nav-brand > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Job Portal */
+.brand-title {
+  font-size: 25px;
+  font-weight: 800;
+  color: #2563eb;
+  letter-spacing: -0.6px;
+  transition: transform 0.3s ease;
+}
+
+/* Separator */
+.brand-separator {
+  font-size: 20px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+/* JavaDebugged */
+.brand-company {
+  position: relative;
+  display: inline-block;
+
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.8px;
+
+  background: linear-gradient(
+    90deg,
+    #7c3aed,
+    #db2777,
+    #f97316,
+    #7c3aed
+  );
+
+  background-size: 300% auto;
+
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: javaDebuggedGradient 5s linear infinite;
+
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+/* Animated underline */
+.brand-company::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+
+  width: 0;
+  height: 3px;
+
+  border-radius: 999px;
+
+  background: linear-gradient(
+    90deg,
+    #7c3aed,
+    #db2777,
+    #f97316
+  );
+
+  box-shadow:
+    0 0 8px rgba(219, 39, 119, 0.5);
+
+  transition: width 0.35s ease;
+}
+
+/* Hover */
+.nav-brand > a:hover .brand-company {
+  transform: translateY(-2px) scale(1.04);
+
+  filter:
+    drop-shadow(0 0 10px rgba(219, 39, 119, 0.3));
+}
+
+.nav-brand > a:hover .brand-company::after {
+  width: 100%;
+}
+
+.nav-brand > a:hover .brand-title {
+  transform: translateX(-2px);
+}
+
+/* Gradient animation */
+@keyframes javaDebuggedGradient {
+  0% {
+    background-position: 0% center;
+  }
+
+  50% {
+    background-position: 100% center;
+  }
+
+  100% {
+    background-position: 0% center;
+  }
+}
+
+/* =========================================================
+   JAVDEBUGGED MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+  .brand-title {
+    font-size: 22px;
+  }
+
+  .brand-company {
+    font-size: 24px;
+  }
+
+  .brand-separator {
+    font-size: 17px;
+  }
+
+  .nav-brand > a {
+    gap: 7px;
+  }
+}
+
+@media (max-width: 450px) {
+  .brand-title {
+    font-size: 20px;
+  }
+
+  .brand-company {
+    font-size: 21px;
+  }
+
+  .brand-separator {
+    font-size: 15px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .brand-company {
+    animation: none;
+  }
+
+  .nav-brand > a:hover .brand-company {
+    transform: none;
+  }
+}
+
+/* =========================================================
+   ADD JOB FORM EXTRAS
+========================================================= */
+
+.admin-form-help {
+  margin-top: -2px;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.admin-success-message,
+.admin-error-message {
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.admin-success-message {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.admin-error-message {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.admin-submit-button:disabled,
+.admin-cancel-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   ADMIN LOGIN PAGE
+========================================================= */
+
+.admin-login-page {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px 20px;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(37, 99, 235, 0.10),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(124, 58, 237, 0.10),
+      transparent 35%
+    ),
+    #f8fafc;
+}
+
+
+/* =========================================================
+   ADMIN LOGIN CARD
+========================================================= */
+
+.admin-login-card {
+  width: 100%;
+  max-width: 470px;
+
+  padding: 38px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+
+  box-shadow:
+    0 25px 60px rgba(15, 23, 42, 0.10),
+    0 5px 18px rgba(15, 23, 42, 0.05);
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.admin-login-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  margin-bottom: 28px;
+
+  white-space: nowrap;
+}
+
+.admin-brand-job {
+  color: #2563eb;
+
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.admin-brand-dot {
+  color: #94a3b8;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.admin-brand-java {
+  font-size: 22px;
+  font-weight: 900;
+
+  background: linear-gradient(
+    90deg,
+    #7c3aed,
+    #db2777,
+    #f97316
+  );
+
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.admin-login-header {
+  text-align: center;
+
+  margin-bottom: 24px;
+}
+
+.admin-login-icon {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 15px;
+
+  border-radius: 16px;
+
+  background: #eff6ff;
+
+  font-size: 26px;
+
+  box-shadow:
+    0 8px 20px rgba(37, 99, 235, 0.10);
+}
+
+.admin-login-header h1 {
+  margin: 0 0 7px;
+
+  color: #111827;
+
+  font-size: 29px;
+  font-weight: 800;
+}
+
+.admin-login-header p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   SECURITY INFO
+========================================================= */
+
+.admin-login-info {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 11px;
+
+  padding: 13px 14px;
+
+  margin-bottom: 20px;
+
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+
+  background: #eff6ff;
+}
+
+.admin-login-info-icon {
+  font-size: 17px;
+}
+
+.admin-login-info strong {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #1e40af;
+
+  font-size: 13px;
+}
+
+.admin-login-info p {
+  margin: 0;
+
+  color: #3b82f6;
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.admin-login-error {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+
+  padding: 12px 13px;
+
+  margin-bottom: 18px;
+
+  border: 1px solid #fecaca;
+  border-radius: 9px;
+
+  background: #fef2f2;
+}
+
+.admin-login-error span {
+  font-size: 15px;
+}
+
+.admin-login-error p {
+  margin: 0;
+
+  color: #b91c1c;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.admin-login-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+.admin-login-form .admin-form-group {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.admin-login-form .admin-form-group label {
+  color: #374151;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   INPUT WRAPPER
+========================================================= */
+
+.admin-input-wrapper,
+.admin-password-wrapper {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+}
+
+.admin-input-icon {
+  position: absolute;
+
+  left: 13px;
+
+  z-index: 2;
+
+  font-size: 15px;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.admin-login-form .admin-input-wrapper input,
+.admin-login-form .admin-password-wrapper input {
+  width: 100%;
+
+  height: 48px;
+
+  padding: 0 14px 0 42px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color: #111827;
+
+  outline: none;
+
+  font-size: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-login-form input::placeholder {
+  color: #9ca3af;
+}
+
+.admin-login-form input:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+
+/* =========================================================
+   PASSWORD TOGGLE
+========================================================= */
+
+.admin-password-toggle {
+  position: absolute;
+
+  right: 8px;
+
+  min-width: 42px;
+  height: 32px;
+
+  padding: 0 7px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: transparent;
+
+  color: #2563eb;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.admin-password-toggle:hover {
+  background: #eff6ff;
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+========================================================= */
+
+.admin-login-submit {
+  width: 100%;
+
+  min-height: 49px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  margin-top: 3px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-login-submit:hover:not(:disabled) {
+  background: #1d4ed8;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 20px rgba(37, 99, 235, 0.22);
+}
+
+.admin-login-submit:disabled {
+  opacity: 0.7;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   SPINNER
+========================================================= */
+
+.admin-login-spinner {
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation: admin-login-spin 0.7s linear infinite;
+}
+
+@keyframes admin-login-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.admin-back-button {
+  width: 100%;
+
+  margin-top: 17px;
+
+  padding: 10px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #6b7280;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.admin-back-button:hover {
+  color: #2563eb;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.admin-login-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  margin-top: 17px;
+  padding-top: 17px;
+
+  border-top: 1px solid #f3f4f6;
+
+  color: #9ca3af;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 500px) {
+
+  .admin-login-page {
+    padding: 15px;
+  }
+
+  .admin-login-card {
+    padding: 28px 20px;
+
+    border-radius: 16px;
+  }
+
+  .admin-login-brand {
+    margin-bottom: 23px;
+  }
+
+  .admin-brand-job {
+    font-size: 18px;
+  }
+
+  .admin-brand-java {
+    font-size: 20px;
+  }
+
+  .admin-login-header h1 {
+    font-size: 25px;
+  }
+
+  .admin-login-icon {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+/* =========================================================
+   ADMIN DASHBOARD - STAT CARD FIX
+========================================================= */
+
+.dashboard-stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 110px;
+  box-sizing: border-box;
+}
+
+.dashboard-stat-card span {
+  display: block;
+  margin-bottom: 8px;
+
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.dashboard-stat-card strong {
+  display: block;
+  margin-bottom: 6px;
+
+  color: #0f172a;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.dashboard-stat-card small {
+  display: block;
+
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   QUICK ACTION ICON
+========================================================= */
+
+.dashboard-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  height: 38px;
+
+  margin-bottom: 14px;
+
+  border-radius: 10px;
+
+  background: #eff6ff;
+  color: #2563eb;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   QUICK ACTION TEXT
+========================================================= */
+
+.dashboard-action-card h3 {
+  margin: 0 0 6px;
+
+  color: #111827;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.dashboard-action-card p {
+  margin: 0;
+
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   DASHBOARD RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-stat-card {
+    min-height: 100px;
+  }
+}
+
+/* =========================================================
+   MANAGE JOBS - FINAL POLISH
+========================================================= */
+
+.manage-jobs-page {
+  min-height: 100vh;
+  background: #f5f7fb;
+}
+
+
+/* =========================================================
+   ADMIN JOB HEADER
+========================================================= */
+
+.admin-header-actions .admin-submit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+
+  padding: 10px 16px;
+
+  border-radius: 8px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-header-actions .admin-submit-button:hover {
+  background: #1d4ed8;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 5px 12px rgba(37, 99, 235, 0.18);
+}
+
+
+/* =========================================================
+   JOB TITLE ROW
+========================================================= */
+
+.job-title-row {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 6px;
+
+  flex-wrap: wrap;
+}
+
+.job-title-row h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 20px;
+  font-weight: 750;
+
+  line-height: 1.3;
+}
+
+
+/* =========================================================
+   JOB STATUS
+========================================================= */
+
+.job-status-active,
+.job-status-closed {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: capitalize;
+}
+
+.job-status-active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.job-status-closed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+
+/* =========================================================
+   COMPANY
+========================================================= */
+
+.admin-job-info .company {
+  margin: 0 0 10px;
+
+  color: #475569;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   JOB META
+========================================================= */
+
+.admin-job-meta {
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  flex-wrap: wrap;
+
+  margin-bottom: 7px;
+}
+
+.admin-job-meta p {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   POSTED DATE
+========================================================= */
+
+.admin-job-info .posted-date {
+  margin: 0;
+
+  color: #94a3b8;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   STATUS BUTTON
+========================================================= */
+
+.status-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 13px;
+
+  border: 1px solid #cbd5e1;
+
+  border-radius: 7px;
+
+  background: #ffffff;
+  color: #475569;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.status-button:hover {
+  background: #f1f5f9;
+
+  border-color: #94a3b8;
+
+  color: #1e293b;
+}
+
+
+/* =========================================================
+   JOB CARD HOVER
+========================================================= */
+
+.admin-job-card {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-job-card:hover {
+  border-color: #cbd5e1;
+
+  box-shadow:
+    0 6px 20px rgba(15, 23, 42, 0.06);
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   SUCCESS / ERROR
+========================================================= */
+
+.success-message,
+.error-message {
+  margin-bottom: 20px;
+
+  padding: 13px 16px;
+
+  border-radius: 9px;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.success-message {
+  border: 1px solid #bbf7d0;
+
+  background: #f0fdf4;
+
+  color: #15803d;
+}
+
+.error-message {
+  border: 1px solid #fecaca;
+
+  background: #fef2f2;
+
+  color: #b91c1c;
+}
+
+
+/* =========================================================
+   EMPTY JOBS
+========================================================= */
+
+.dashboard-empty {
+  padding: 45px 25px;
+
+  text-align: center;
+}
+
+.dashboard-empty h2 {
+  margin-bottom: 8px;
+
+  color: #111827;
+
+  font-size: 22px;
+}
+
+.dashboard-empty p {
+  margin-bottom: 20px;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+.dashboard-empty .admin-submit-button {
+  display: inline-flex;
+
+  text-decoration: none;
+
+  padding: 10px 16px;
+
+  border-radius: 8px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .admin-job-card {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .admin-job-actions {
+    width: 100%;
+  }
+
+  .admin-job-actions .edit-button,
+  .admin-job-actions .status-button,
+  .admin-job-actions .delete-button {
+    flex: 1;
+  }
+
+  .admin-job-meta {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 5px;
+  }
+
+  .job-title-row {
+    align-items: flex-start;
+  }
+
+  .admin-header-actions {
+    width: 100%;
+  }
+
+  .admin-header-actions .admin-submit-button {
+    width: 100%;
+  }
+}

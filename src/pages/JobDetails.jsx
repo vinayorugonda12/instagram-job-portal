@@ -14,6 +14,7 @@ function JobDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [applying, setApplying] = useState(false);
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
   // =========================
   // FETCH JOB
@@ -72,154 +73,41 @@ function JobDetails() {
   // =========================
 
   async function handleApply() {
-    // User is not logged in
-    if (!user) {
-      const shouldLogin = window.confirm(
-        "Please login to apply for this job.\n\nWould you like to go to the login page?"
-      );
-
-      if (shouldLogin) {
-        navigate("/login");
-      }
-
+    if (!job) {
       return;
     }
 
-    if (!job) {
+    if (!job.application_url) {
+      alert("This job does not have an external application link.");
       return;
     }
 
     setApplying(true);
 
     try {
-      // =========================
-      // CHECK IF ALREADY APPLIED
-      // =========================
-
-      const {
-        data: existingApplication,
-        error: checkError,
-      } = await supabase
-        .from("applications")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("job_id", job.id)
-        .maybeSingle();
-
-      if (checkError) {
-        console.error(
-          "Application check error:",
-          checkError
-        );
-
-        alert(
-          "Unable to check your application. Please try again."
-        );
-
-        setApplying(false);
-        return;
-      }
-
-      // =========================
-      // ALREADY APPLIED
-      // =========================
-
-      if (existingApplication) {
-        await trackEvent({
-          eventType: "APPLY_CLICK",
-          jobId: job.id,
-          userId: user.id,
-        });
-
-        alert(
-          "You have already applied for this job."
-        );
-
-        if (job.application_url) {
-          window.open(
-            job.application_url,
-            "_blank",
-            "noopener,noreferrer"
-          );
-        }
-
-        setApplying(false);
-        return;
-      }
-
-      // =========================
-      // SAVE APPLICATION
-      // =========================
-
-      const {
-        error: applicationError,
-      } = await supabase
-        .from("applications")
-        .insert({
-          user_id: user.id,
-          job_id: job.id,
-        });
-
-      if (applicationError) {
-        console.error(
-          "Application insert error:",
-          applicationError
-        );
-
-        alert(
-          "Unable to save your application. Please try again."
-        );
-
-        setApplying(false);
-        return;
-      }
-
-      // =========================
-      // TRACK APPLY CLICK
-      // =========================
-
+      // Track apply click.
+      // userId is optional, so anonymous visitors can also be tracked.
       await trackEvent({
         eventType: "APPLY_CLICK",
         jobId: job.id,
-        userId: user.id,
+        userId: user?.id || null,
       });
 
-      // =========================
-      // SUCCESS MESSAGE
-      // =========================
-
-      alert(
-        "Your application has been recorded successfully!"
+      // Open the company's application page.
+      window.open(
+        job.application_url,
+        "_blank",
+        "noopener,noreferrer"
       );
-
-      // =========================
-      // OPEN COMPANY APPLICATION URL
-      // =========================
-
-      if (job.application_url) {
-        window.open(
-          job.application_url,
-          "_blank",
-          "noopener,noreferrer"
-        );
-      } else {
-        alert(
-          "This job does not have an external application link."
-        );
-      }
-
     } catch (error) {
-      console.error(
-        "Application exception:",
-        error
-      );
+      console.error("Apply error:", error);
 
       alert(
-        "Something went wrong while applying."
+        "Unable to open the application link. Please try again."
       );
+    } finally {
+      setApplying(false);
     }
-
-    setApplying(false);
   }
 
   // =========================
@@ -304,19 +192,21 @@ function JobDetails() {
                 </>
               ) : (
                 <>
-                  <Link
-                    to="/login"
+                  <button
+                    type="button"
                     className="login-button"
+                    onClick={() => setShowComingSoon(true)}
                   >
                     Login
-                  </Link>
+                  </button>
 
-                  <Link
-                    to="/register"
+                  <button
+                    type="button"
                     className="register-button"
+                    onClick={() => setShowComingSoon(true)}
                   >
                     Register
-                  </Link>
+                  </button>
                 </>
               )}
 
@@ -347,6 +237,43 @@ function JobDetails() {
             </Link>
 
           </div>
+
+          {/* COMING SOON MODAL */}
+
+          {showComingSoon && (
+            <div className="coming-soon-overlay">
+              <div className="coming-soon-modal">
+
+                <button
+                  type="button"
+                  className="coming-soon-close"
+                  onClick={() => setShowComingSoon(false)}
+                >
+                  ×
+                </button>
+
+                <div className="coming-soon-icon">
+                  🚀
+                </div>
+
+                <h2>Coming Soon</h2>
+
+                <p>
+                  Login and registration will be available soon.
+                  For now, you can browse jobs and apply directly.
+                </p>
+
+                <button
+                  type="button"
+                  className="coming-soon-button"
+                  onClick={() => setShowComingSoon(false)}
+                >
+                  Continue Browsing Jobs
+                </button>
+
+              </div>
+            </div>
+          )}
 
         </div>
       </div>
@@ -408,19 +335,21 @@ function JobDetails() {
               </>
             ) : (
               <>
-                <Link
-                  to="/login"
+                <button
+                  type="button"
                   className="login-button"
+                  onClick={() => setShowComingSoon(true)}
                 >
                   Login
-                </Link>
+                </button>
 
-                <Link
-                  to="/register"
+                <button
+                  type="button"
                   className="register-button"
+                  onClick={() => setShowComingSoon(true)}
                 >
                   Register
-                </Link>
+                </button>
               </>
             )}
 
@@ -531,7 +460,7 @@ function JobDetails() {
               disabled={applying}
             >
               {applying
-                ? "Processing..."
+                ? "Opening..."
                 : "Apply Now"}
             </button>
 
@@ -547,6 +476,47 @@ function JobDetails() {
           </div>
 
         </div>
+
+        {/* =========================
+            COMING SOON MODAL
+        ========================= */}
+
+        {showComingSoon && (
+          <div className="coming-soon-overlay">
+
+            <div className="coming-soon-modal">
+
+              <button
+                type="button"
+                className="coming-soon-close"
+                onClick={() => setShowComingSoon(false)}
+              >
+                ×
+              </button>
+
+              <div className="coming-soon-icon">
+                🚀
+              </div>
+
+              <h2>Coming Soon</h2>
+
+              <p>
+                Login and registration will be available soon.
+                For now, you can browse jobs and apply directly.
+              </p>
+
+              <button
+                type="button"
+                className="coming-soon-button"
+                onClick={() => setShowComingSoon(false)}
+              >
+                Continue Browsing Jobs
+              </button>
+
+            </div>
+
+          </div>
+        )}
 
       </div>
 

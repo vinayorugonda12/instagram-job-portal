@@ -18,6 +18,7 @@ function AddJob() {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -33,28 +34,37 @@ function AddJob() {
 
     setLoading(true);
     setMessage("");
+    setMessageType("");
 
-    const { error } = await supabase
-      .from("jobs")
-      .insert([
-        {
-          title: form.title,
-          company: form.company,
-          location: form.location,
-          job_type: form.job_type,
-          salary: form.salary,
-          description: form.description,
-          requirements: form.requirements,
-          application_url: form.application_url,
-          status: "active",
-        },
-      ]);
+    try {
+      const { error } = await supabase
+        .from("jobs")
+        .insert([
+          {
+            title: form.title.trim(),
+            company: form.company.trim(),
+            location: form.location.trim(),
+            job_type: form.job_type.trim(),
+            salary: form.salary.trim(),
+            description: form.description.trim(),
+            requirements: form.requirements.trim(),
+            application_url: form.application_url.trim(),
+            status: "active",
+          },
+        ]);
 
-    if (error) {
-      console.error(error);
-      setMessage(error.message);
-    } else {
+      if (error) {
+        console.error("Job posting error:", error);
+
+        setMessage(error.message);
+        setMessageType("error");
+
+        setLoading(false);
+        return;
+      }
+
       setMessage("Job posted successfully!");
+      setMessageType("success");
 
       setForm({
         title: "",
@@ -70,119 +80,253 @@ function AddJob() {
       setTimeout(() => {
         navigate("/admin/jobs");
       }, 1000);
-    }
+    } catch (error) {
+      console.error("Unexpected job posting error:", error);
 
-    setLoading(false);
+      setMessage(
+        error.message ||
+          "Unable to post the job. Please try again."
+      );
+
+      setMessageType("error");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <div
-      style={{
-        maxWidth: "800px",
-        margin: "40px auto",
-        padding: "20px",
-      }}
-    >
-      <h1>Add New Job</h1>
+    <div className="admin-page">
+      <div className="admin-container">
 
-      <form onSubmit={handleSubmit}>
+        {/* =========================
+            PAGE HEADER
+        ========================= */}
 
-        <input
-          name="title"
-          placeholder="Job Title"
-          value={form.title}
-          onChange={handleChange}
-          required
-        />
+        <div className="admin-header">
+          <div>
+            <h1>Add New Job</h1>
 
-        <br />
-        <br />
+            <p>
+              Create and publish a new opportunity
+              on JavaDebugged Job Portal.
+            </p>
+          </div>
 
-        <input
-          name="company"
-          placeholder="Company"
-          value={form.company}
-          onChange={handleChange}
-          required
-        />
+          <div className="admin-header-actions">
+            <button
+              type="button"
+              className="admin-secondary-button"
+              onClick={() => navigate("/admin/dashboard")}
+            >
+              Dashboard
+            </button>
 
-        <br />
-        <br />
+            <button
+              type="button"
+              className="admin-secondary-button"
+              onClick={() => navigate("/admin/jobs")}
+            >
+              Manage Jobs
+            </button>
+          </div>
+        </div>
 
-        <input
-          name="location"
-          placeholder="Location"
-          value={form.location}
-          onChange={handleChange}
-        />
+        {/* =========================
+            JOB FORM
+        ========================= */}
 
-        <br />
-        <br />
+        <form
+          className="admin-form"
+          onSubmit={handleSubmit}
+        >
 
-        <input
-          name="job_type"
-          placeholder="Job Type - Full Time / Internship"
-          value={form.job_type}
-          onChange={handleChange}
-        />
+          {/* JOB TITLE */}
 
-        <br />
-        <br />
+          <div className="admin-form-group">
+            <label htmlFor="title">
+              Job Title
+            </label>
 
-        <input
-          name="salary"
-          placeholder="Salary / Package"
-          value={form.salary}
-          onChange={handleChange}
-        />
+            <input
+              id="title"
+              name="title"
+              type="text"
+              placeholder="Example: Java Developer"
+              value={form.title}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <br />
-        <br />
+          {/* COMPANY */}
 
-        <textarea
-          name="description"
-          placeholder="Job Description"
-          value={form.description}
-          onChange={handleChange}
-          rows="6"
-        />
+          <div className="admin-form-group">
+            <label htmlFor="company">
+              Company
+            </label>
 
-        <br />
-        <br />
+            <input
+              id="company"
+              name="company"
+              type="text"
+              placeholder="Example: Accenture"
+              value={form.company}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <textarea
-          name="requirements"
-          placeholder="Requirements"
-          value={form.requirements}
-          onChange={handleChange}
-          rows="6"
-        />
+          {/* LOCATION */}
 
-        <br />
-        <br />
+          <div className="admin-form-group">
+            <label htmlFor="location">
+              Location
+            </label>
 
-        <input
-          name="application_url"
-          type="url"
-          placeholder="Application URL"
-          value={form.application_url}
-          onChange={handleChange}
-          required
-        />
+            <input
+              id="location"
+              name="location"
+              type="text"
+              placeholder="Example: Hyderabad, Telangana"
+              value={form.location}
+              onChange={handleChange}
+            />
+          </div>
 
-        <br />
-        <br />
+          {/* JOB TYPE */}
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Posting..." : "Post Job"}
-        </button>
-      </form>
+          <div className="admin-form-group">
+            <label htmlFor="job_type">
+              Job Type
+            </label>
 
-      {message && (
-        <p style={{ marginTop: "20px" }}>
-          {message}
-        </p>
-      )}
+            <input
+              id="job_type"
+              name="job_type"
+              type="text"
+              placeholder="Example: Full Time / Internship / Contract"
+              value={form.job_type}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* SALARY */}
+
+          <div className="admin-form-group">
+            <label htmlFor="salary">
+              Salary / Package
+            </label>
+
+            <input
+              id="salary"
+              name="salary"
+              type="text"
+              placeholder="Example: 4.5 LPA"
+              value={form.salary}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* DESCRIPTION */}
+
+          <div className="admin-form-group">
+            <label htmlFor="description">
+              Job Description
+            </label>
+
+            <textarea
+              id="description"
+              name="description"
+              placeholder="Enter the complete job description..."
+              value={form.description}
+              onChange={handleChange}
+              rows={7}
+            />
+          </div>
+
+          {/* REQUIREMENTS */}
+
+          <div className="admin-form-group">
+            <label htmlFor="requirements">
+              Requirements
+            </label>
+
+            <textarea
+              id="requirements"
+              name="requirements"
+              placeholder="Enter skills, qualifications and requirements..."
+              value={form.requirements}
+              onChange={handleChange}
+              rows={7}
+            />
+          </div>
+
+          {/* APPLICATION URL */}
+
+          <div className="admin-form-group">
+            <label htmlFor="application_url">
+              Application URL
+            </label>
+
+            <input
+              id="application_url"
+              name="application_url"
+              type="url"
+              placeholder="https://example.com/apply"
+              value={form.application_url}
+              onChange={handleChange}
+              required
+            />
+
+            <small className="admin-form-help">
+              Applicants will be redirected to this
+              link when they click Apply Now.
+            </small>
+          </div>
+
+          {/* MESSAGE */}
+
+          {message && (
+            <div
+              className={
+                messageType === "success"
+                  ? "admin-success-message"
+                  : "admin-error-message"
+              }
+            >
+              {message}
+            </div>
+          )}
+
+          {/* ACTIONS */}
+
+          <div className="admin-form-actions">
+
+            <button
+              type="submit"
+              className="admin-submit-button"
+              disabled={loading}
+            >
+              {loading
+                ? "Posting Job..."
+                : "Publish Job"}
+            </button>
+
+            <button
+              type="button"
+              className="admin-cancel-button"
+              onClick={() =>
+                navigate("/admin/jobs")
+              }
+              disabled={loading}
+            >
+              Cancel
+            </button>
+
+          </div>
+
+        </form>
+      </div>
     </div>
   );
 }

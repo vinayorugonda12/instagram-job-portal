@@ -88,149 +88,223 @@ function ManageJobs() {
     loadJobs();
   }
 
+  /* =========================
+     LOADING
+  ========================= */
+
   if (loading) {
     return (
-      <div className="manage-jobs-page">
-        <h1>Manage Jobs</h1>
-        <p>Loading jobs...</p>
+      <div className="admin-page">
+        <div className="admin-container">
+          <div className="admin-loading">
+            <h2>Loading Jobs...</h2>
+            <p>Please wait while the jobs are loaded.</p>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="manage-jobs-page">
+    <div className="admin-page">
+      <div className="admin-container">
 
-      <div className="manage-jobs-header">
-        <div>
-          <h1>Manage Jobs</h1>
-          <p>
-            Add, edit, close, reopen or delete your jobs.
-          </p>
-        </div>
+        {/* =========================
+            HEADER
+        ========================= */}
 
-        <Link
-          to="/admin/jobs/new"
-          className="add-job-button"
-        >
-          + Add New Job
-        </Link>
-      </div>
+        <div className="admin-header">
+          <div>
+            <h1>Manage Jobs</h1>
 
-      {message && (
-        <div className="success-message">
-          {message}
-        </div>
-      )}
+            <p>
+              Add, edit, close, reopen or delete your jobs.
+            </p>
+          </div>
 
-      {error && (
-        <div className="error-message">
-          {error}
-        </div>
-      )}
-
-      {jobs.length === 0 ? (
-        <div className="empty-jobs">
-          <h2>No jobs found</h2>
-
-          <p>
-            Start by posting your first job.
-          </p>
-
-          <Link to="/admin/jobs/new">
-            Add New Job
-          </Link>
-        </div>
-      ) : (
-        <div className="admin-jobs-list">
-
-          {jobs.map((job) => (
-            <div
-              className="admin-job-card"
-              key={job.id}
+          <div className="admin-header-actions">
+            <Link
+              to="/admin/jobs/new"
+              className="admin-submit-button"
             >
+              + Add New Job
+            </Link>
+          </div>
+        </div>
 
-              <div className="admin-job-info">
+        {/* =========================
+            SUCCESS MESSAGE
+        ========================= */}
 
-                <div className="job-title-row">
+        {message && (
+          <div className="success-message">
+            {message}
+          </div>
+        )}
 
-                  <h2>{job.title}</h2>
+        {/* =========================
+            ERROR MESSAGE
+        ========================= */}
 
-                  <span
-                    className={
-                      job.status === "active"
-                        ? "status-active"
-                        : "status-closed"
-                    }
-                  >
-                    {job.status}
-                  </span>
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
+
+        {/* =========================
+            EMPTY STATE
+        ========================= */}
+
+        {jobs.length === 0 ? (
+          <div className="dashboard-section">
+            <div className="dashboard-empty">
+              <h2>No jobs found</h2>
+
+              <p>
+                Start by posting your first job.
+              </p>
+
+              <Link
+                to="/admin/jobs/new"
+                className="admin-submit-button"
+              >
+                + Add New Job
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* =========================
+                JOB COUNT
+            ========================= */}
+
+            <div className="admin-summary-card">
+              <span>Total Jobs</span>
+
+              <strong>
+                {jobs.length}
+              </strong>
+            </div>
+
+            {/* =========================
+                JOB LIST
+            ========================= */}
+
+            <div className="admin-job-list">
+
+              {jobs.map((job) => (
+                <div
+                  className="admin-job-card"
+                  key={job.id}
+                >
+
+                  {/* =========================
+                      JOB INFORMATION
+                  ========================= */}
+
+                  <div className="admin-job-info">
+
+                    <div className="job-title-row">
+
+                      <h2>
+                        {job.title}
+                      </h2>
+
+                      <span
+                        className={
+                          job.status === "active"
+                            ? "job-status-active"
+                            : "job-status-closed"
+                        }
+                      >
+                        {job.status === "active"
+                          ? "Active"
+                          : "Closed"}
+                      </span>
+
+                    </div>
+
+                    <p className="company">
+                      {job.company}
+                    </p>
+
+                    <div className="admin-job-meta">
+
+                      <p>
+                        📍{" "}
+                        {job.location ||
+                          "Location not specified"}
+                      </p>
+
+                      <p>
+                        💼{" "}
+                        {job.job_type ||
+                          "Job type not specified"}
+                      </p>
+
+                      {job.salary && (
+                        <p>
+                          💰 {job.salary}
+                        </p>
+                      )}
+
+                    </div>
+
+                    <p className="posted-date">
+                      Posted:{" "}
+                      {new Date(
+                        job.created_at
+                      ).toLocaleDateString()}
+                    </p>
+
+                  </div>
+
+                  {/* =========================
+                      ACTIONS
+                  ========================= */}
+
+                  <div className="admin-job-actions">
+
+                    <Link
+                      to={`/admin/jobs/edit/${job.id}`}
+                      className="edit-button"
+                    >
+                      Edit
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        toggleJobStatus(job)
+                      }
+                      className="status-button"
+                    >
+                      {job.status === "active"
+                        ? "Close"
+                        : "Reopen"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        deleteJob(job)
+                      }
+                      className="delete-button"
+                    >
+                      Delete
+                    </button>
+
+                  </div>
 
                 </div>
-
-                <p className="company">
-                  {job.company}
-                </p>
-
-                <p>
-                  📍 {job.location || "Location not specified"}
-                </p>
-
-                <p>
-                  💼 {job.job_type || "Not specified"}
-                </p>
-
-                {job.salary && (
-                  <p>
-                    💰 {job.salary}
-                  </p>
-                )}
-
-                <p className="posted-date">
-                  Posted:{" "}
-                  {new Date(
-                    job.created_at
-                  ).toLocaleDateString()}
-                </p>
-
-              </div>
-
-              <div className="admin-job-actions">
-
-                <Link
-                  to={`/admin/jobs/edit/${job.id}`}
-                  className="edit-button"
-                >
-                  Edit
-                </Link>
-
-                <button
-                  onClick={() =>
-                    toggleJobStatus(job)
-                  }
-                  className="status-button"
-                >
-                  {job.status === "active"
-                    ? "Close"
-                    : "Reopen"}
-                </button>
-
-                <button
-                  onClick={() =>
-                    deleteJob(job)
-                  }
-                  className="delete-button"
-                >
-                  Delete
-                </button>
-
-              </div>
+              ))}
 
             </div>
-          ))}
+          </>
+        )}
 
-        </div>
-      )}
-
+      </div>
     </div>
   );
 }
